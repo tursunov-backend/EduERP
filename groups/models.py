@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+import uuid
 
 class GroupDays(models.TextChoices):
     ODD_DAYS = 'ODD', 'Toq kunlar'
@@ -12,21 +12,20 @@ class GroupStatus(models.TextChoices):
     RECENTLY = 'RECENTLY', 'Kutilmoqda..'
 
 class Group(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     date_start = models.DateField()
     date_end = models.DateField()
-    price = models.IntegerField(validators=[MinValueValidator(0)])
+    price = models.IntegerField()
     days = models.CharField(max_length=10, choices=GroupDays.choices)
     time_start = models.TimeField()
     time_end = models.TimeField()
     status = models.CharField(max_length=15, choices=GroupStatus.choices, default=GroupStatus.ACTIVE)
-    room = models.CharField(max_length=100)
-    max_student = models.IntegerField(default=20, validators=[MinValueValidator(1)])
+    room = models.UUIDField(default=uuid.uuid4, editable=False)
+    max_student = models.IntegerField(default=20)
     teacher = models.ForeignKey(
         'teachers.Teacher', 
         on_delete=models.SET_NULL, 
         null=True, 
-        blank=True,
         related_name='groups'
     )
     students = models.ManyToManyField(
