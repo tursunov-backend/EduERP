@@ -30,7 +30,7 @@ class Group(models.Model):
     )
     students = models.ManyToManyField(
         'students.Student', 
-        related_name='enrolled__groups', 
+        related_name='enrolled_groups', 
         blank=True
     )
 
